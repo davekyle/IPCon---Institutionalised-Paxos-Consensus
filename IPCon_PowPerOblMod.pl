@@ -416,6 +416,7 @@ initiates(syncAck(A, V, R, I, C), (voted( A, (R, B), V, I, C ) = true), T) :-
 	% getxb(Max, B),
 	% getxv(Max, V). %,
 	%write('Here1'), nl,
+	% have to use this not chosen() because the set of acceptors has changed
 	highestVote(V, R, B, I, C, T).
 	%write('Initiated voted'), nl.
 	
@@ -428,6 +429,7 @@ initiates(syncAck(A, V, R, I, C), (reportedVote( A, (R, B), V, (R,B), I, C ) = t
 	% getxb(Max, B),
 	% getxv(Max, V). %,
 	%write('Here2'), nl,
+	% have to use this not chosen() because the set of acceptors has changed
 	highestVote(V, R, B, I, C, T).
 	%write('Initiated reportedVote'), nl.
 	
