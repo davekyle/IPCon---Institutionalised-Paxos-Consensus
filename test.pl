@@ -4,7 +4,13 @@ p(3,5,2).
 p(4,3,1).
 p(5,2,4).
 
-z = [4, 6, 3, 7, 8].
+test :- 
+	findall(Z,(p(X,Y,Z),not(Z=1)),Bag),
+	write('Bag = '), write(Bag), nl,
+	length(Bag, Length),
+	write('Length = '), write(Length), nl.
+
+%z = [4, 6, 3, 7, 8].
 
 subsetN( _, S, N, S ) :-
         length( S, N ), !.

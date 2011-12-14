@@ -364,11 +364,11 @@ holdsAt(per(L, revise( L, I, C)) = true, T) :-
 	holdsAt(pow(L, revise( L, I, C)) = true, T).
 	
 %% obligation to revise when chosenness is broken.
-holdsAt(obl(L, revise(L, I, C)) = true, T) :-
-	holdsAt(per(L, revise( L, I, C)) = true, T),
-	T1 is T-1,
-	chosen(V, R, I, C, T1),
-	\+ chosen(V, R, I, C, T). %,
+% holdsAt(obl(L, revise(L, I, C)) = true, T) :-
+	% holdsAt(per(L, revise( L, I, C)) = true, T),
+	% T1 is T-1,
+	% chosen(V, R, I, C, T1),
+	% \+ chosen(V, R, I, C, T). %,
 	%write('Chosen - '), write(V), write(','), write(R), write(','), write(I), write(','), write(C), write(','), write(T), write('('), write(T1), write(')'), nl.
 
 	
@@ -433,12 +433,30 @@ initiates(syncAck(A, V, R, I, C), (reportedVote( A, (R, B), V, (R,B), I, C ) = t
 	highestVote(V, R, B, I, C, T).
 	%write('Initiated reportedVote'), nl.
 	
-% leader should revise if new member being sync'd doesn't agree (MAYBE)
+% initiates(syncAck(A, 'no', R, I, C), (voted( A, (R, 0), null, I, C ) = true), T) :-
+	% holdsAt(pow(A, syncAck(A, 'no', R, I, C)) = true, T),
+	% highestVote(V, R, B, I, C, T), write('initiated a null vote'), nl.	
+
+initiates(syncAck(A, 'no', R, I, C), (reportedVote( A, (R, 0), null, (R,B), I, C ) = true), T) :-
+	holdsAt(pow(A, syncAck(A, 'no', R, I, C)) = true, T),
+	highestVote(V, R, B, I, C, T). %, write('initiated a null reportedVote for '), write(A), nl.
+	
+% note that this means 'no' is not a valid value...
 initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
-	%holdsAt(pow(A, syncAck(A, _, R, I, C)) = true, T), %write('powSyn'), nl,
-	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T), %write('perSyn'), nl,
-	%holdsAt(pow(L, revise( L, I, C)) = true, T), %write('powRev'), nl,
-	holdsAt(per(L, revise( L, I, C)) = true, T). %,% write('perRev'), nl,
+	%numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst), write('For:'), write(NumberFor), nl, write('Against:'), write(NumberAgainst), nl,
+	setof((Agent,RevBall,Value), Agent^RevBAll^Value^B^I^C^holdsAt( (reportedVote(Agent,RevBall,Value,B,I,C ) = true), T ), AllVotes1),
+	write('AllVotes:'), write(AllVotes1), nl,
+	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T), 
+	holdsAt(per(L, revise( L, I, C)) = true, T), 
+	holdsAt(sync(A, _, R, I, C) = true, T).
+	%NumberFor is (NumberAgainst - 1).	
+
+% leader should revise if new member being sync'd doesn't agree (MAYBE)
+%initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
+	%%holdsAt(pow(A, syncAck(A, _, R, I, C)) = true, T), %write('powSyn'), nl,
+	%holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T), %write('perSyn'), nl,
+	%%holdsAt(pow(L, revise( L, I, C)) = true, T), %write('powRev'), nl,
+	%holdsAt(per(L, revise( L, I, C)) = true, T). %,% write('perRev'), nl,
 	% setOfHighestVotes(I, C, T, AllVotes), 
 	% max_in(AllVotes, Max), %write(Max), nl,
 	% getxr(Max, R),  %write(R), nl,
@@ -453,11 +471,11 @@ holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T) :-
 	holdsAt(sync(A, V, R, I, C) = true, T),
 	(Ack = V ; Ack = 'no').
 holdsAt(per(A, syncAck(A, Ack, R, I, C)) = true, T) :- %write('perSyn? '),
-	holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T).
+	holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T), write('perSyn for '), write(A), nl.
 	%holdsAt(sync(A, _, R, I, C) = true, T). %, write('yes').
 	
-terminates(syncAck(A, _, R, I, C), sync(A, _, R, I, C) = true, T) :-
-	holdsAt(pow(A, syncAck(A, _, R, I, C)) = true, T). %,
+terminates(syncAck(A, Ack, R, I, C), sync(A, _, R, I, C) = true, T) :-
+	holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T). %,
 	%holdsAt(per(A, syncAck(A, V, R, I, C)) = true, T).
 	
 % A has an obligation to syncAck if a sync exists
