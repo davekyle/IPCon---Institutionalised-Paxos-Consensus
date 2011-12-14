@@ -30,7 +30,7 @@ chosen(V, R, I, C, T) :-
 	findall((MaxV, MaxR, MaxB), member((_,(MaxR, MaxB), MaxV),AllVotes), HighestVotes),
 	%write('Highest:'), write(HighestVotes), nl,
 	length(HighestVotes, Length),
-	holdsAt((quorum_size( MaxR, I, C) = Size),T), %write('@'), write(T), write(' L:'), write(Length), write(' QS:'), write(Size), nl,
+	holdsAt((quorum_size( MaxR, I, C) = Size),T),% write('@'), write(T), write(' L:'), write(Length), write(' QS:'), write(Size), nl,
 	Length >= Size, !.
 
 

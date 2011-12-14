@@ -303,6 +303,11 @@ terminates(leaveCluster( List, C ),(role_of( A, _, _, _, C ) = true), T) :-
 	member(A, List).
 terminates(leaveCluster( List, C ),(role_of( A, _, _, C ) = true), T) :-
 	member(A, List).
+	
+initiates(leaveCluster( A, C ), obl(L, revise(L, I, C)) = true , T) :-
+	holdsAt(per(L, revise( L, I, C)) = true, T),
+	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
+	holdsAt(possibleRemRevision(V, R, I, C) = true, T).
 
 % leader can add anyone to any role whenever they want, unless that person already has the role.
 initiates(addRole( L, A, Role, R, I, C ), (role_of( A, Role, R, I, C ) = true), T) :-
@@ -326,6 +331,9 @@ holdsAt(per(L, addRole( L, A, Role, R, I, C )) = true, T) :-
 terminates(remRole( L, A, Role, R, I, C ), (role_of( A, Role, R, I, C ) = true), T) :-
 	holdsAt(pow(L, remRole( L, A, Role, R, I, C )) = true, T). %,
 	%holdsAt(per(L, remRole( L, A, Role, R, I, C )) = true, T).
+terminates(remRole( L, A, Role, R, I, C ), (reportedVote( A, (R, _), _, (R,_), I, C ) = true), T) :-
+	holdsAt(pow(L, remRole( L, A, Role, R, I, C )) = true, T),
+	holdsAt((reportedVote( A, (R, _), _, (R,_), I, C ) = true), T).
 	
 holdsAt(pow(L, remRole( L, A, Role, R, I, C )) = true, T) :-
 	holdsAt((role_of(L, leader, _, I, C ) = true),T),
@@ -335,9 +343,9 @@ holdsAt(per(L, remRole( L, A, Role, R, I, C )) = true, T) :-
 	%holdsAt((role_of( A, Role, R, I, C ) = true),T).
 	
 initiates(remRole( L, A, acceptor, R, I, C ), obl(L, revise(L, I, C)) = true , T) :-
-	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T),
-	holdsAt(per(L, revise( L, I, C)) = true, T),
-	holdsAt(possibleRemRevision(R, I, C) = true, T).
+	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T), %write('Removed an acc'), nl,
+	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
 	
 	
 % convenience action for making a new revision
@@ -472,10 +480,11 @@ holdsAt(possibleAddRevision(R, I, C) = true, T) :-
 	
 % there's a possibility of revision if a value has been chosen
 % and if the number of votes for and not-for that val are equal before the acceptor leaves
-holdsAt(possibleRemRevision(R, I, C) = true, T) :-
-	chosen(V, R, I, C, T),
-	numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst),
-	NumberFor = NumberAgainst.
+holdsAt(possibleRemRevision(V, R, I, C) = true, T) :- %write('Checking for possibleRemRevision'), nl,
+	% have to use this not chosen() because the set of acceptors has changed
+	highestVote(V, R, B, I, C, T), %write('Got value !'), nl,
+	numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst), %write('Got #Votes'), nl,
+	NumberFor = NumberAgainst. %, write('Possible Rem Revision'), nl.
 	
 % leader should revise if new member being sync'd doesn't agree (MAYBE)
 %initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
