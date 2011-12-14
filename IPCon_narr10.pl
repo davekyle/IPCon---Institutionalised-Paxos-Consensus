@@ -1,6 +1,6 @@
 %% Narrative to show addition of multiple agents, and how consensus can be rebuilt (aggregation)
 verbose :-
- true.
+ false.
  
 setOfAllAgents([ag1, ag2, ag3, ag4, ag5, ag6, ag7, ag8]).
  
