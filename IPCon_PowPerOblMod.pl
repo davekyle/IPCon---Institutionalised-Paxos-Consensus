@@ -296,18 +296,32 @@ terminates(resignLeadership( L, I, C ),(role_of( L, leader, _, I, C ) = true), T
 holdsAt(pow(resignLeadership( L, I, C )) = true, T) :-
 	holdsAt((role_of(L, leader, _, I, C ) = true),T).
 
-% agent can leave a cluster whenever they like.
+% agent can leave a cluster whenever they like. NOTE list-based leaving breaks obl so removed.
 terminates(leaveCluster( A, C ),(role_of( A, _, _, _, C ) = true), T).
 terminates(leaveCluster( A, C ),(role_of( A, _, _, C ) = true), T).
-terminates(leaveCluster( List, C ),(role_of( A, _, _, _, C ) = true), T) :-
-	member(A, List).
-terminates(leaveCluster( List, C ),(role_of( A, _, _, C ) = true), T) :-
-	member(A, List).
+% terminates(leaveCluster( List, C ),(role_of( A, _, _, _, C ) = true), T) :-
+	% member(A, List).
+% terminates(leaveCluster( List, C ),(role_of( A, _, _, C ) = true), T) :-
+	% member(A, List).
 	
+terminates(leaveCluster( A, C ), (reportedVote( A, _, _, _, _, C ) = true), T) :-
+	holdsAt((reportedVote( A, _, _, _, _, C ) = true), T).
+% terminates(leaveCluster( List, C ), (reportedVote( A, _, _, _, _, C ) = true), T) :-
+	% member(A, List),
+	% holdsAt((reportedVote( A, _, _, _, _, C ) = true), T).
+	
+% note, can't do multiple leaveCluster in one timestamp if this is to work.
 initiates(leaveCluster( A, C ), obl(L, revise(L, I, C)) = true , T) :-
-	holdsAt(per(L, revise( L, I, C)) = true, T),
+	holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %write('Removed an acc'), nl,
+	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
 	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
-	holdsAt(possibleRemRevision(V, R, I, C) = true, T).
+	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
+% initiates(leaveCluster( List, C ), obl(L, revise(L, I, C)) = true , T) :-
+	% member(A, List),
+	% holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %write('Removed an acc'), nl,
+	% holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+	% holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
+	% holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
 
 % leader can add anyone to any role whenever they want, unless that person already has the role.
 initiates(addRole( L, A, Role, R, I, C ), (role_of( A, Role, R, I, C ) = true), T) :-
@@ -342,6 +356,7 @@ holdsAt(per(L, remRole( L, A, Role, R, I, C )) = true, T) :-
 	holdsAt(pow(L, remRole( L, A, Role, R, I, C )) = true, T).
 	%holdsAt((role_of( A, Role, R, I, C ) = true),T).
 	
+% note, can't do multiple leaveCluster in one timestamp if this is to work.
 initiates(remRole( L, A, acceptor, R, I, C ), obl(L, revise(L, I, C)) = true , T) :-
 	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T), %write('Removed an acc'), nl,
 	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
@@ -466,6 +481,7 @@ initiates(syncAck(A, 'no', R, I, C), (reportedVote( A, (R, 0), null, (R,B), I, C
 	% %NumberFor is (NumberAgainst - 1).	
 
 % obl to revise if the reply is no and there was a possibility that you had to revise
+% note that multiple syncAck's can't be in the same timestep if this is to work
 initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
 	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T),
 	holdsAt(per(L, revise( L, I, C)) = true, T),
