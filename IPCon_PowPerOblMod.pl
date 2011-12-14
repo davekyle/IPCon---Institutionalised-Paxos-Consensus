@@ -334,6 +334,11 @@ holdsAt(per(L, remRole( L, A, Role, R, I, C )) = true, T) :-
 	holdsAt(pow(L, remRole( L, A, Role, R, I, C )) = true, T).
 	%holdsAt((role_of( A, Role, R, I, C ) = true),T).
 	
+initiates(remRole( L, A, acceptor, R, I, C ), obl(L, revise(L, I, C)) = true , T) :-
+	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T),
+	holdsAt(per(L, revise( L, I, C)) = true, T),
+	holdsAt(possibleRemRevision(R, I, C) = true, T).
+	
 	
 % convenience action for making a new revision
 initiates(revise( L, I, C), (role_of(Ag, acceptor, NewR, I, C) = true), T) :-
@@ -442,15 +447,36 @@ initiates(syncAck(A, 'no', R, I, C), (reportedVote( A, (R, 0), null, (R,B), I, C
 	highestVote(V, R, B, I, C, T). %, write('initiated a null reportedVote for '), write(A), nl.
 	
 % note that this means 'no' is not a valid value...
-initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
-	%numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst), write('For:'), write(NumberFor), nl, write('Against:'), write(NumberAgainst), nl,
-	setof((Agent,RevBall,Value), Agent^RevBAll^Value^B^I^C^holdsAt( (reportedVote(Agent,RevBall,Value,B,I,C ) = true), T ), AllVotes1),
-	write('AllVotes:'), write(AllVotes1), nl,
-	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T), 
-	holdsAt(per(L, revise( L, I, C)) = true, T), 
-	holdsAt(sync(A, _, R, I, C) = true, T).
-	%NumberFor is (NumberAgainst - 1).	
+% initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
+	% %numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst), write('For:'), write(NumberFor), nl, write('Against:'), write(NumberAgainst), nl,
+	% setof((Agent,RevBall,Value), Agent^RevBAll^Value^B^I^C^holdsAt( (reportedVote(Agent,RevBall,Value,B,I,C ) = true), T ), AllVotes1),
+	% write('AllVotes:'), write(AllVotes1), nl,
+	% holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T), 
+	% holdsAt(per(L, revise( L, I, C)) = true, T), 
+	% holdsAt(sync(A, _, R, I, C) = true, T).
+	% %NumberFor is (NumberAgainst - 1).	
 
+% obl to revise if the reply is no and there was a possibility that you had to revise
+initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
+	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T),
+	holdsAt(per(L, revise( L, I, C)) = true, T),
+	holdsAt(possibleAddRevision(R, I, C) = true, T).
+	
+	
+% there's a possibility of revision if anyone is being synched (so a val *was* chosen)
+% and if the number of votes for and not-for that val are equal before the syncAck
+holdsAt(possibleAddRevision(R, I, C) = true, T) :-
+	holdsAt(sync(_, Val, R, I, C) = true, T),
+	numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst),
+	NumberFor = NumberAgainst.
+	
+% there's a possibility of revision if a value has been chosen
+% and if the number of votes for and not-for that val are equal before the acceptor leaves
+holdsAt(possibleRemRevision(R, I, C) = true, T) :-
+	chosen(V, R, I, C, T),
+	numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst),
+	NumberFor = NumberAgainst.
+	
 % leader should revise if new member being sync'd doesn't agree (MAYBE)
 %initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
 	%%holdsAt(pow(A, syncAck(A, _, R, I, C)) = true, T), %write('powSyn'), nl,
@@ -471,7 +497,7 @@ holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T) :-
 	holdsAt(sync(A, V, R, I, C) = true, T),
 	(Ack = V ; Ack = 'no').
 holdsAt(per(A, syncAck(A, Ack, R, I, C)) = true, T) :- %write('perSyn? '),
-	holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T), write('perSyn for '), write(A), nl.
+	holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T). %, write('perSyn for '), write(A), nl.
 	%holdsAt(sync(A, _, R, I, C) = true, T). %, write('yes').
 	
 terminates(syncAck(A, Ack, R, I, C), sync(A, _, R, I, C) = true, T) :-

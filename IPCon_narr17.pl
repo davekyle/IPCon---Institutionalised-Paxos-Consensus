@@ -47,7 +47,7 @@ happens( syncReq(	ag1, ag5, 	a, 					0,	issue,	cluster ),	3).
 happens( syncReq(	ag1, ag6, 	a, 					0,	issue,	cluster ),	3).
 happens( syncReq(	ag1, ag7, 	a, 					0,	issue,	cluster ),	3).
 happens( syncReq(	ag1, ag8, 	a, 					0,	issue,	cluster ),	3).
-happens( syncAck(	ag5,		a,					0,	issue,	cluster ),	4).
+happens( syncAck(	ag5,		no,					0,	issue,	cluster ),	4).
 happens( syncAck(	ag6,		no,					0,	issue,	cluster ),	5).
 happens( syncAck(	ag7,		no,					0,	issue,	cluster ),	6).
 happens( syncAck(	ag8,		no,					0,	issue,	cluster ),	7).
