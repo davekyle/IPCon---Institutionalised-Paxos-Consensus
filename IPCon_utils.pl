@@ -33,7 +33,8 @@ setOfHighestVotes(I, C, T, AllVotes) :-
 	%write(ReportedAgents), nl,
 	clean(ReportedAgents, AllVotes1, AllVotes).
 	
-%% Find highest vote per agent ONLY
+%% unused
+%% Find highest vote per agent ONLY, at a time T
 cleanT(AllVotes, T, Result) :-
 	setof((Agent), RB^V^holdsAt(voted( Agent, RB, V, I, C ) = true, T) , Agents),
 	%write('Agents:'), write(Agents), nl,
@@ -64,7 +65,7 @@ removeDup([H|T],Out) :-
 reverse([X|Y],Z,W) :- reverse(Y,[X|Z],W).
 reverse([],X,X).	
 
-% find all subsets
+% find all subsets of length N
 subsetN( _, S, N, S ) :-
 	%write('In1'), nl,
     length( S, N ), %write('lengthMatched'), nl,

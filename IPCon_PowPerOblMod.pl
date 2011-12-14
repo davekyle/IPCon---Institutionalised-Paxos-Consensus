@@ -114,51 +114,38 @@ holdsAt((obl( L, prepare1a(L,B,I,C) ) = true),T) :-
 % learners and acceptors can send response1b msgs informing on others for addition to the hnb list if they have pwr and permission
 %initiates(response1b( LA, (A,N,V), B, I, C ), (hnb(B,I,C) = [ ( A, N, V ) | Q ]), T) :-
 %% FIXME should be like this...
-initiates(response1b( LA, (A,N,V), B, I, C ), (reportedVote(A,N,V,B,I,C ) = true), T) :-
+% CHANGED to allow only acceptors - learner interaction removed to reduce confusion
+initiates(response1b( A, (A,N,V), B, I, C ), (reportedVote(A,N,V,B,I,C ) = true), T) :-
 	N = ( R_N, BB_N ),
 	B = ( R, BB ),
 	%holdsAt((hnb(B,I,C) = [Q]), T),
 	%write('assigned'), nl,
-	holdsAt((pow( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T). %, write('pow\'d'), nl.
+	holdsAt((pow( A, response1b(A,(A,N,V),B,I,C) ) = true), T). %, write('pow\'d'), nl.
 	%holdsAt((per( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T). %, write('REPORTED').
 	% ( or can send a didntVote msg somehow )
 % learner/acceptor has pwr to response1b if theyre a learner/acceptor
-holdsAt((pow( LA, response1b(LA,(LA,N,V),B,I,C) ) = true), T) :-
+holdsAt((pow( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 	B = ( R, BB ),
-	holdsAt(( role_of( LA, acceptor, R, I, C ) = true), T),
+	holdsAt(( role_of( A, acceptor, R, I, C ) = true), T),
 	holdsAt((pre_vote(B,I,C) = true), T).
-% learner/acceptor has pwr to response1b if theyre a learner/acceptor
-holdsAt((pow( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T) :-
-	B = ( R, BB ),	
-	holdsAt(( role_of( LA, learner, R, I, C )  = true), T),
-	holdsAt((pre_vote(B,I,C) = true), T).
-% learner/acceptor has permission to response1b if they're replying to the leader and the person they're reporting on did actually vote previously
-holdsAt((per( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T) :-
+% acceptor has permission to response1b if they're replying to the leader and they did actually vote previously
+holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 	%holdsAt((pre_vote(B,I,C) = true), T),
-	holdsAt((pow( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T),
+	holdsAt((pow( A, response1b(A,(A,N,V),B,I,C) ) = true), T),
 	holdsAt((voted(A,N,V,I,C ) = true), T).
-holdsAt((per( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T) :-
+holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 	B = (BR, BB),
 	%holdsAt((pre_vote(B,I,C) = true), T),
-	holdsAt((pow( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T),
+	holdsAt((pow( A, response1b(A,(A,N,V),B,I,C) ) = true), T),
 	\+ holdsAt((voted(A,Val,(BR,Ball),I,C ) = true), T),
 	not(Val = null), Ball > BB,
 	N = (BR,0), V = null.
-% reporting on someone else is accomplished by using msging protocol ensuring authentication & non-repudiation (we assume anyway)
-%% learners obligated to reply if the acceptor in question didn't
-holdsAt((obl( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T) :-
-	holdsAt((per( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T),
-	\+ LA = A,
-	holdsAt(( role_of( LA, learner, R, I, C )  = true), T),
-	% per includes pow
+% acceptor obligated to respond if they voted and havent responded already
+holdsAt((obl( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
+	holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T),
 	holdsAt((voted(A,N,V,I,C ) = true), T),
 	\+ holdsAt((reportedVote(A,N,V,B,I,C ) = true), T).
-% holdsAt((per( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T) :-
-	% B = (BR, BB),
-	% holdsAt((pow( LA, response1b(LA,(A,N,V),B,I,C) ) = true), T),
-	% \+ holdsAt((voted(A,Val,(BR,Ball),I,C ) = true), T),
-	% not(Val = null), Ball > BB,
-	% N = (BR,0), V = null.
+
 
 
 % leader can submit2a and start the ballot if they have pwr and permission.
