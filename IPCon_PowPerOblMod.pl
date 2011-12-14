@@ -410,41 +410,41 @@ holdsAt(obl(L, syncReq(L, A, V, R, I, C)) = true, T) :-
 initiates(syncAck(A, V, R, I, C), (voted( A, (R, B), V, I, C ) = true), T) :-
 	holdsAt(pow(A, syncAck(A, V, R, I, C)) = true, T),
 	%holdsAt(per(A, syncAck(A, V, R, I, C)) = true, T),
-	setOfHighestVotes(I, C, T, AllVotes), 
-	max_in(AllVotes, Max),
-	getxr(Max, R), 
-	getxb(Max, B),
-	getxv(Max, V). %,
+	% setOfHighestVotes(I, C, T, AllVotes), 
+	% max_in(AllVotes, Max),
+	% getxr(Max, R), 
+	% getxb(Max, B),
+	% getxv(Max, V). %,
 	%write('Here1'), nl,
-	%chosen(V, R, I, C, T),
+	highestVote(V, R, B, I, C, T).
 	%write('Initiated voted'), nl.
 	
 initiates(syncAck(A, V, R, I, C), (reportedVote( A, (R, B), V, (R,B), I, C ) = true), T) :-
 	holdsAt(pow(A, syncAck(A, V, R, I, C)) = true, T),
 	%holdsAt(per(A, syncAck(A, V, R, I, C)) = true, T),
-	setOfHighestVotes(I, C, T, AllVotes), 
-	max_in(AllVotes, Max),
-	getxr(Max, R), 
-	getxb(Max, B),
-	getxv(Max, V). %,
+	% setOfHighestVotes(I, C, T, AllVotes), 
+	% max_in(AllVotes, Max),
+	% getxr(Max, R), 
+	% getxb(Max, B),
+	% getxv(Max, V). %,
 	%write('Here2'), nl,
-	%chosen(V, R, I, C, T),
+	highestVote(V, R, B, I, C, T).
 	%write('Initiated reportedVote'), nl.
 	
 % leader should revise if new member being sync'd doesn't agree (MAYBE)
-initiates(syncAck(A, Ack, R, I, C), obl(L, revise(L, I, C)) = true , T) :-
+initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
 	%holdsAt(pow(A, syncAck(A, _, R, I, C)) = true, T), %write('powSyn'), nl,
-	holdsAt(per(A, syncAck(A, Ack, R, I, C)) = true, T), %write('perSyn'), nl,
+	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T), %write('perSyn'), nl,
 	%holdsAt(pow(L, revise( L, I, C)) = true, T), %write('powRev'), nl,
-	holdsAt(per(L, revise( L, I, C)) = true, T),% write('perRev'), nl,
-	setOfHighestVotes(I, C, T, AllVotes), 
-	max_in(AllVotes, Max), %write(Max), nl,
-	getxr(Max, R),  %write(R), nl,
-	getxb(Max, B), %write(B), nl,
-	getxv(Max, V), %write(V), nl,
+	holdsAt(per(L, revise( L, I, C)) = true, T). %,% write('perRev'), nl,
+	% setOfHighestVotes(I, C, T, AllVotes), 
+	% max_in(AllVotes, Max), %write(Max), nl,
+	% getxr(Max, R),  %write(R), nl,
+	% getxb(Max, B), %write(B), nl,
+	% getxv(Max, V), %write(V), nl,
 	%write('Here3'), nl,
-	%chosen(V, R, I, C, T),
-	not(Ack = V). %, write(AV), nl.
+	% highestVote(V, R, I, C, T),
+	% not(Ack = V). %, write(AV), nl.
 	
 holdsAt(pow(A, syncAck(A, Ack, R, I, C)) = true, T) :-
 	holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %.
@@ -459,10 +459,11 @@ terminates(syncAck(A, _, R, I, C), sync(A, _, R, I, C) = true, T) :-
 	%holdsAt(per(A, syncAck(A, V, R, I, C)) = true, T).
 	
 % A has an obligation to syncAck if a sync exists
-holdsAt(obl(syncAck(A, Ack, R, I, C))=true,T):-
+holdsAt(obl(A, syncAck(A, Ack, R, I, C)) = true,T):-
 	holdsAt(per(A, syncAck(A, Ack, R, I, C)) = true, T),
 	holdsAt(sync(A, V, R, I, C) = true, T),
 	(Ack = V ; Ack = 'no'). %,
+	%highestVote(V, R, B, I, C, T). %,
 	% setOfHighestVotes(I, C, T, AllVotes), 
 	% max_in(AllVotes, Max),
 	% getxr(Max, R), 

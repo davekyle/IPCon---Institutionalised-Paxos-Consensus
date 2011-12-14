@@ -1,5 +1,13 @@
 :- use_module(library(lists)).
 
+
+highestVote(V, R, B, I, C, T) :-
+	setOfHighestVotes(I, C, T, AllVotes), 
+	max_in(AllVotes, Max),
+	getxr(Max, R), 
+	getxb(Max, B),
+	getxv(Max, V).
+
 % check to see if V has been chosen in R I C at T
 %% note: doesn't actually return true if a value was chosen but then a subsequent ballot
 %% fails to confirm this (eg due to learner/acceptor failure in reporting votes)
