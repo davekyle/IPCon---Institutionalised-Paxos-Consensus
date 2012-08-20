@@ -68,6 +68,8 @@ initially( Fluent = false ) :-
 	\+ ( Fluent = role_of(_,_,_,_) ),
 	\+ ( Fluent = reportedVote(_,_,_,_,_,_ ) ),
 	
+	\+ ( Fluent = sync(_, _, _, _, _) ),
+	
 	\+ ( Fluent = quorum_size( _, _, _) ),
 	
 	\+ ( Fluent = role_of(_,_,_) ),
