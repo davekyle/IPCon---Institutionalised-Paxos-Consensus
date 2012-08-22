@@ -110,6 +110,7 @@ holdsAt((obl( L, prepare1a(L,B,I,C) ) = true),T) :-
 	%holdsAt((pow( L, prepare1a(L,B,I,C) ) = true),T), %per includes pow
 	holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T),
 	holdsAt((proposed( V, I, C ) = true), T),
+	% FIXME TODO this should be (R,_) ? needs to be in the same revision...
 	\+ holdsAt((pre_vote( (ZR,ZB), I, C ) = true),T).
 
 
@@ -316,6 +317,7 @@ terminates(leaveCluster( A, C ), (reportedVote( A, _, _, _, _, C ) = true), T) :
 initiates(leaveCluster( A, C ), obl(L, revise(L, I, C)) = true , T) :-
 	holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %write('Removed an acc'), nl,
 	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+	% FIXME TODO these B's might be wrong... agent needs to have voted for the value but might not have reported at time of voting
 	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
 	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
 % initiates(leaveCluster( List, C ), obl(L, revise(L, I, C)) = true , T) :-
