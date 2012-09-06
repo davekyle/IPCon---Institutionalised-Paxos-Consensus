@@ -55,7 +55,7 @@ initially( sanction(Agent) = [] ) :-
 	setOfAllAgents(Agents),
 	member(Agent, Agents).
 % ----- otherwise initially every other boolean valued fluent is false
-% ----- the value of 'pow', 'per', `obl' and sanction is determined by state constraints                     
+% ----- the value of 'pow', 'per', 'obl' and sanction is determined by state constraints                     
 initially( Fluent = false ) :-
 	\+ ( Fluent = proposed(_,_,_) ),
 	\+ ( Fluent = pre_vote(_,_,_) ),
