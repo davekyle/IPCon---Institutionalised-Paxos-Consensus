@@ -553,7 +553,12 @@ holdsAt(obl(A, syncAck(A, Ack, R, I, C)) = true,T):-
 % holdsAt(per(L, foo(L)) = true, T):-
 	% holdsAt((role_of(L, leader, _, _, _ ) = true),T).
 
-
+% happens(X) initiates lazy sanction against A if pow & no per
+% FIXME work out how to do this properly if we keep on with prolog
+initiates(X, sanction(A)=true,T) :-
+	holdsAt(pow(A, X)=true,T),
+	%write(A), write(' has pow to '), write(X), nl,
+	\+ holdsAt(per(A, X)=true,T). %, write('but no per'),nl.
 
 % this might generate A LOT of fluents, because these are never going to be terminated...	
 holdsAt((quorum_size( R, I, C) = Size),T) :-
