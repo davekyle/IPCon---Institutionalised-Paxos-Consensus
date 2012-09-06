@@ -364,6 +364,7 @@ holdsAt(per(L, remRole( L, A, Role, R, I, C )) = true, T) :-
 initiates(remRole( L, A, acceptor, R, I, C ), obl(L, revise(L, I, C)) = true , T) :-
 	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T), %write('Removed an acc'), nl,
 	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+	% FIXME TODO these B's might be wrong... agent needs to have voted for the value but might not have reported at time of voting
 	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
 	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
 	

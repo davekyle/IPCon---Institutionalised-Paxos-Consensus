@@ -129,15 +129,17 @@ happens( vote2b( 	ag5, (0,1), d,						i,	c3 ),	28).
 happens( vote2b( 	ag6, (0,1), d,						i,	c3 ),	28).
 happens( vote2b( 	ag7, (0,1), d,						i,	c3 ),	28).
 
-%% EG5 - failure of multiple agents averted by learner
-happens( addRole(ag5, ag6, learner, 			0,		i,	c3 ), 29).
-happens( request0a( ag5, d, 							i,	c3 ),	30).
-happens( prepare1a( ag5, (0,2), 						i,	c3 ),	31).
-happens( response1b(ag5, ( ag5, (0,1),d ), 	(0,2),		i,	c3 ), 32).
-happens( response1b(ag6, ( ag6, (0,1),d ), 	(0,2),		i,	c3 ), 32).
-happens( response1b(ag6, ( ag3, (0,1),d ), 	(0,2),		i,	c3 ), 32).
-happens( response1b(ag6, ( ag4, (0,1),d ), 	(0,2),		i,	c3 ), 32).
-%% we can see obl to reply for ag7 here.
+%% EG5 - obligations to reply
+%%%happens( addRole(ag5, ag6, learner, 			0,		i,	c3 ), 29).
+happens( request0a( ag5, d, 							i,	c3 ),	29).
+happens( prepare1a( ag5, (0,2), 						i,	c3 ),	30).
+%% obligations to reply show here
+happens( response1b(ag3, ( ag3, (0,1),d ), 	(0,2),		i,	c3 ), 31).
+happens( response1b(ag4, ( ag4, (0,1),d ), 	(0,2),		i,	c3 ), 31).
+happens( response1b(ag5, ( ag5, (0,1),d ), 	(0,2),		i,	c3 ), 31).
+happens( response1b(ag6, ( ag6, (0,1),d ), 	(0,2),		i,	c3 ), 31).
+%% we can still see obl to reply for ag7 here.
+happens( response1b(ag7, ( ag7, (0,1),d ), 	(0,2),		i,	c3 ), 32).
 happens( submit2a(	ag5, (0,2), d,						i,	c3 ),	33).
 
 
