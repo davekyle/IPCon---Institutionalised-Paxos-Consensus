@@ -55,7 +55,7 @@ initially( sanction(Agent) = [] ) :-
 	setOfAllAgents(Agents),
 	member(Agent, Agents).
 % ----- otherwise initially every other boolean valued fluent is false
-% ----- the value of 'pow', 'per', 'obl' and sanction is determined by state constraints                     
+% ----- the value of 'pow', 'per', `obl' and sanction is determined by state constraints                     
 initially( Fluent = false ) :-
 	\+ ( Fluent = proposed(_,_,_) ),
 	\+ ( Fluent = pre_vote(_,_,_) ),
@@ -171,6 +171,11 @@ holdsAt((pow( L, submit2a(L,B,V,I,C) ) = true), T) :-
 	% X >= Y,
 	% holdsAt((safe_at( V, Q_, B, I, C ) = true), T).
 % ( need to tidy up proposed() after value is chosen ? but not before it is chosen ! might need >1 ballot ... what about open_vote() ?)
+
+%%
+%% FIXME TODO 
+%% submit should terminate any existing pre_vote fluents...
+%%
 
 holdsAt((per( L, submit2a(L,B,V,I,C) ) = true), T) :- %write('subPer?'), nl,
 	%write('Calculating permission to submit2a('),write(L),write(','),write(B),write(','),write(V),write(','),write(I),write(','),write(C),write(')'),nl,
