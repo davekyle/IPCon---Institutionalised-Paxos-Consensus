@@ -172,10 +172,7 @@ holdsAt((pow( L, submit2a(L,B,V,I,C) ) = true), T) :-
 	% holdsAt((safe_at( V, Q_, B, I, C ) = true), T).
 % ( need to tidy up proposed() after value is chosen ? but not before it is chosen ! might need >1 ballot ... what about open_vote() ?)
 
-%%
-%% FIXME TODO 
-%% submit should terminate any existing pre_vote fluents...
-%%
+%% submit shouldn't remove pre_votes - more submits may need to happen after the first one...
 
 holdsAt((per( L, submit2a(L,B,V,I,C) ) = true), T) :- %write('subPer?'), nl,
 	%write('Calculating permission to submit2a('),write(L),write(','),write(B),write(','),write(V),write(','),write(I),write(','),write(C),write(')'),nl,
