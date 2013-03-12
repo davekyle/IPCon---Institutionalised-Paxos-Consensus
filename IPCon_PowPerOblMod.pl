@@ -578,6 +578,11 @@ holdsAt( pow(Agent, Action) = false, T ) :-
 holdsAt( per(Agent, Action) = false, T ) :-
 	\+ holdsAt( per(Agent, Action) = true, T ).
 	
+%% obligation stuff
+holdsAt( obl(Agent, Action) = true, T ) :-
+	holdsAt( oblig( Role, R, I, C, Action ) = true, T),
+	holdsAt( role_of( Agent, Role, R, I, C ) = true, T).
+	
 % youre the leader in all issues if youre the leader in any
 holdsAt((role_of(Agent, leader, Issue, Cluster)=true),T) :-
 	holdsAt((role_of(Agent, leader, _, Issue, Cluster)=true),T).
