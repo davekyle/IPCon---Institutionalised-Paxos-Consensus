@@ -118,10 +118,7 @@ holdsAt((obl( leader, R, I, C, prepare1a(L,B,I,C) ) = true),T) :-
 %	\+ holdsAt((pre_vote( (R,_), I, C ) = true),T).
 
 
-% learners and acceptors can send response1b msgs informing on others for addition to the hnb list if they have pwr and permission
-%initiates(response1b( LA, (A,N,V), B, I, C ), (hnb(B,I,C) = [ ( A, N, V ) | Q ]), T) :-
-%% FIXME should be like this...
-% CHANGED to allow only acceptors - learner interaction removed to reduce confusion
+% acceptors can send response1b msgs informing on others for addition to the hnb list if they have pwr and permission
 initiates(response1b( A, (A,N,V), B, I, C ), (reportedVote(A,N,V,B,I,C ) = true), T) :-
 	N = ( R_N, BB_N ),
 	B = ( R, BB ),
@@ -237,10 +234,13 @@ holdsAt((per( L, submit2a(L,B,V,I,C) ) = true), T) :- %write('subPer?'), nl,
 	%write('Per to submit '), write(V), write(' in '), write(B),nl, 
 	!. %% Putting this in removes a million duplicate permissions/votes, BUT it also means permission to submit shows up once even if you have it for more than one
 
-
-holdsAt((obl( L, submit2a(L,B,V,I,C) ) = true), T) :-
+holdsAt((obl( leader, R, I, C, submit2a(L,B,V,I,C) ) = true), T) :-
+	B = (R, BB),
 	holdsAt((per( L, submit2a(L,B,V,I,C) ) = true), T),
 	\+ holdsAt((open_vote( B, V, I, C ) = true), T).
+%holdsAt((obl( L, submit2a(L,B,V,I,C) ) = true), T) :-
+%	holdsAt((per( L, submit2a(L,B,V,I,C) ) = true), T),
+%	\+ holdsAt((open_vote( B, V, I, C ) = true), T).
 	
 
 % acceptor can vote2b to vote if they have the pwr and permission

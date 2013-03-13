@@ -29,7 +29,7 @@ initially( voted(ag5, (0,0),null,	issue, cluster) = true ).
 % checking for quorum-choosing
 initially( voted(ag2, (1,0),4,		issue, cluster) = true ).
 initially( voted(ag3, (1,0),4,		issue, cluster) = true ).
-initially( voted(ag4, (1,1),5,		issue, cluster) = true ).
+%initially( voted(ag4, (1,1),5,		issue, cluster) = true ).
 
  
 happens( request0a( ag1, 3, 1,						issue, cluster ),	1).
@@ -37,8 +37,8 @@ happens( prepare1a( ag1, (1,10), 					issue, cluster ),	2).
 happens( response1b(ag1, ( ag1, (0,0),null ), 	(1,10), issue, cluster ), 	3).
 happens( response1b(ag2, ( ag2, (1,0),4 ), 		(1,10), issue, cluster ), 	4).
 happens( response1b(ag3, ( ag3, (1,0),4 ),		(1,10), issue, cluster ), 	5).
-%happens( response1b(ag4, ( ag4, (0,0),null ), 	(1,10), issue, cluster ), 	6).
-happens( response1b(ag4, ( ag4, (1,1),5 ),	 	(1,10), issue, cluster ), 	6).
+happens( response1b(ag4, ( ag4, (0,0),null ), 	(1,10), issue, cluster ), 	6).
+%happens( response1b(ag4, ( ag4, (1,1),5 ),	 	(1,10), issue, cluster ), 	6).
 happens( response1b(ag5, ( ag5, (0,0),null ), 	(1,10), issue, cluster ), 	7).
 happens( submit2a(	ag1, (1,10),3,					issue, cluster ),	8).
 happens( vote2b( 	ag1, (1,10),3,					issue, cluster ),	9).
