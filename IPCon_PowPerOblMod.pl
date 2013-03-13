@@ -37,7 +37,7 @@ terminates(Event, Fluent = V, T) :-
 /****************************************
  * SYNTAX OF ACTIONS                    *
  *                                      *
- * request0a(Agent, Value, Issue, Cluster)         *
+ * request0a(Agent, Value, Revision, Issue, Cluster)         *
  * prepare1a(Agent, Ballot, Issue, Cluster)        *
  * respond1b(Agent1, (Agent2, PreviousBallot, Value), Ballot, Issue, Cluster)      		*
  * submit2a(Agent, Ballot, Value, Issue, Cluster) 		*
@@ -57,7 +57,7 @@ initially( sanction(Agent) = [] ) :-
 % ----- otherwise initially every other boolean valued fluent is false
 % ----- the value of 'pow', 'per', `obl' and sanction is determined by state constraints                     
 initially( Fluent = false ) :-
-	\+ ( Fluent = proposed(_,_,_) ),
+	\+ ( Fluent = proposed(_,_,_,_) ),
 	\+ ( Fluent = pre_vote(_,_,_) ),
 	\+ ( Fluent = hnb(_,_,_) ),
 	\+ ( Fluent = open_vote(_,_,_,_) ),
@@ -77,14 +77,14 @@ initially( Fluent = false ) :-
 	
 	
 % proposer can propose if they have the pwr
-initiates(request0a( P, V, I, C ),(proposed( V, I, C ) = true), T) :- %write('Req?'), nl,
-	holdsAt((pow( P, request0a(P,V,I,C) ) = true), T). %, write('Req!'), nl.
+initiates(request0a( P, V, R, I, C ),(proposed( V, R, I, C ) = true), T) :- %write('Req?'), nl,
+	holdsAt((pow( P, request0a(P,V,R,I,C) ) = true), T). %, write('Req!'), nl.
 % proposer has pwr if they're a proposer
-holdsAt((pow( P, request0a(P,V,I,C) ) = true), T) :- %write('ReqPow?'), nl,
+holdsAt((pow( P, request0a(P,V,R,I,C) ) = true), T) :- %write('ReqPow?'), nl,
 	holdsAt((role_of( P, proposer, I, C ) = true),T). %, write('ReqPow!'),nl.
 % this should always return true, because you want anyone (even external agents?) to be able to check values
-holdsAt((per( P, request0a(P,V,I,C) ) = true), T) :-
-	holdsAt((pow( P, request0a(P,V,I,C) ) = true), T).
+holdsAt((per( P, request0a(P,V,R,I,C) ) = true), T) :-
+	holdsAt((pow( P, request0a(P,V,R,I,C) ) = true), T).
 %%
 %% Optional 0b/0c msg where leader informs proposer of results of response1b/vote2b respectively
 %%
@@ -109,9 +109,9 @@ holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T) :-
 holdsAt((obl( L, prepare1a(L,B,I,C) ) = true),T) :-
 	%holdsAt((pow( L, prepare1a(L,B,I,C) ) = true),T), %per includes pow
 	holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T),
-	holdsAt((proposed( V, I, C ) = true), T),
-	% FIXME TODO this should be (R,_) ? needs to be in the same revision...
-	\+ holdsAt((pre_vote( (ZR,ZB), I, C ) = true),T).
+	holdsAt((proposed( V, R, I, C ) = true), T),
+	B = (R, BB),
+	\+ holdsAt((pre_vote( (R,_), I, C ) = true),T).
 
 
 % learners and acceptors can send response1b msgs informing on others for addition to the hnb list if they have pwr and permission
@@ -180,7 +180,7 @@ holdsAt((per( L, submit2a(L,B,V,I,C) ) = true), T) :- %write('subPer?'), nl,
 	%write('Calculating permission to submit2a('),write(L),write(','),write(B),write(','),write(V),write(','),write(I),write(','),write(C),write(')'),nl,
 	B = ( R, BB ),
 	holdsAt((pow( L, submit2a(L,B,V,I,C) ) = true), T),
-	holdsAt((proposed( V, I, C ) = true), T), % this line only lets you submit proposed values. comment out this line to unbind what you can submit.
+	holdsAt((proposed( V, R, I, C ) = true), T), % this line only lets you submit proposed values. comment out this line to unbind what you can submit.
 	%holdsAt((pre_vote( B, I, C ) = true), T), % this is in pow) % this line tells you what B=(R,BB) to look for safety at
 	%quorum_size( R, I, C, Size), 
 	holdsAt((quorum_size( R, I, C)= Size),T),

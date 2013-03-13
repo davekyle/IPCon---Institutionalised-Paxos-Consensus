@@ -44,7 +44,7 @@ initially( reportedVote(ag6, (0,4),b,(0,4), 	i, c2) = true ).
 initially( reportedVote(ag7, (0,4),b,(0,4),		i, c2) = true ).
 initially( reportedVote(ag8, (0,4),b,(0,4),		i, c2) = true ).
 %% 
-initially( proposed( a, 			i, c1 ) = true ).
+initially( proposed( a, 0,			i, c1 ) = true ).
 
 %happens( response1b(ag1, ( ag1, (0,1),a ), 		(0,2),	i,	c1 ), 	3).
 %happens( response1b(ag1, ( ag1, (0,1),a ), 		(0,4),	i,	c1 ), 	19).
@@ -73,8 +73,8 @@ happens( syncAck(	ag5,		a,					0,	i,	c1 ),	8).
 happens( syncAck(	ag6,		a,					0,	i,	c1 ),	8).
 happens( syncAck(	ag7,		no,					0,	i,	c1 ),	9).
 happens( revise(	ag1,								i,	c1 ),	10).
-happens( request0a( ag1, a, 							i,	c1 ),	11).
-happens( request0a( ag5, c, 							i,	c1 ),	11).
+happens( request0a( ag1, a, 1,							i,	c1 ),	11).
+happens( request0a( ag5, c, 1,							i,	c1 ),	11).
 happens( prepare1a( ag1, (1,1), 						i,	c1 ),	12).
 % we only care about this revision, so no *need* to reply about others.
 happens( response1b(ag1, ( ag1, (1,0),null ), 	(1,1),	i,	c1 ), 	13).
@@ -115,7 +115,7 @@ happens(arrogateLeadership( ag5, 						i,	c3 ),	22).
 % we presume that if anyone objects, they can sort it out
 happens( addRole(ag5, [ag3, ag4, ag5, ag6, ag7], acceptor, 	0,	i,	c3 ),	23).
 happens( addRole(ag5, ag5, proposer, 			any,	i,	c3 ),	23).
-happens( request0a( ag5, d, 							i,	c3 ),	24).
+happens( request0a( ag5, d, 0,							i,	c3 ),	24).
 happens( prepare1a( ag5, (0,1), 						i,	c3 ),	25).
 happens( response1b(ag3, ( ag3, (0,0),null ), 	(0,1),	i,	c3 ), 26).
 happens( response1b(ag4, ( ag4, (0,0),null ), 	(0,1),	i,	c3 ), 26).
@@ -131,7 +131,7 @@ happens( vote2b( 	ag7, (0,1), d,						i,	c3 ),	28).
 
 %% EG5 - obligations to reply
 %%%happens( addRole(ag5, ag6, learner, 			0,		i,	c3 ), 29).
-happens( request0a( ag5, d, 							i,	c3 ),	29).
+happens( request0a( ag5, d, 0,							i,	c3 ),	29).
 happens( prepare1a( ag5, (0,2), 						i,	c3 ),	30).
 %% obligations to reply show here
 happens( response1b(ag3, ( ag3, (0,1),d ), 	(0,2),		i,	c3 ), 31).

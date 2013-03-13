@@ -32,7 +32,7 @@ initially( voted(ag3, (1,0),4,		issue, cluster) = true ).
 initially( voted(ag4, (1,1),5,		issue, cluster) = true ).
 
  
-happens( request0a( ag1, 3, 						issue, cluster ),	1).
+happens( request0a( ag1, 3, 1,						issue, cluster ),	1).
 happens( prepare1a( ag1, (1,10), 					issue, cluster ),	2).
 happens( response1b(ag1, ( ag1, (0,0),null ), 	(1,10), issue, cluster ), 	3).
 happens( response1b(ag2, ( ag2, (1,0),4 ), 		(1,10), issue, cluster ), 	4).
