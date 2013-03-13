@@ -1,3 +1,5 @@
+% Shows standard msgflow.
+%Change ag4 initially() and response to change whether or not leader has per to submit
 verbose :-
  false.
 

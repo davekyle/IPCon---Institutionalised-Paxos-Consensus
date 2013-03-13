@@ -108,7 +108,7 @@ holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T) :-
 	holdsAt((pow( L, prepare1a(L,B,I,C) ) = true),T).
 holdsAt((obl( leader, R, I, C, prepare1a(L,B,I,C) ) = true),T) :-
 	B = (R, BB),
-	holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T),
+%	holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T),
 	holdsAt((proposed( V, R, I, C ) = true), T),
 	\+ holdsAt((pre_vote( (R,_), I, C ) = true),T).
 %holdsAt((obl( L, prepare1a(L,B,I,C) ) = true),T) :-
@@ -370,12 +370,19 @@ holdsAt(per(L, remRole( L, A, Role, R, I, C )) = true, T) :-
 	%holdsAt((role_of( A, Role, R, I, C ) = true),T).
 	
 % note, can't do multiple leaveCluster in one timestamp if this is to work.
-initiates(remRole( L, A, acceptor, R, I, C ), obl(L, revise(L, I, C)) = true , T) :-
+% Doesn't *need* to be agent-neutral because there is a leader removing their roles...
+initiates(remRole( L, A, acceptor, R, I, C ), obl(leader, R, I, C, revise(L, I, C)) = true , T) :-
 	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T), %write('Removed an acc'), nl,
 	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
 	% FIXME TODO these B's might be wrong... agent needs to have voted for the value but might not have reported at time of voting
 	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
 	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
+%initiates(remRole( L, A, acceptor, R, I, C ), obl(L, revise(L, I, C)) = true , T) :-
+%	holdsAt(per(L, remRole( L, A, acceptor, R, I, C )) = true, T), %write('Removed an acc'), nl,
+%	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+%	% FIXME TODO these B's might be wrong... agent needs to have voted for the value but might not have reported at time of voting
+%	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
+%	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
 	
 	
 % convenience action for making a new revision
@@ -441,11 +448,16 @@ holdsAt(per(L, syncReq(L, A, V, R, I, C)) = true, T) :-
 	holdsAt((role_of(A, acceptor, R, I, C ) = true),T),
 	\+ holdsAt((role_of(A, acceptor, R, I, C ) = true),T-1). %, write('acc'), nl.
 	
-holdsAt(obl(L, syncReq(L, A, V, R, I, C)) = true, T) :-
-	holdsAt(per(L, syncReq(L, A, V, R, I, C)) = true, T),
+holdsAt(obl(leader, R, I, C, syncReq(L, A, V, R, I, C)) = true, T) :-
+	%holdsAt(per(L, syncReq(L, A, V, R, I, C)) = true, T),
 	chosen(V, R, I, C, T-1),
 	holdsAt((role_of(A, acceptor, R, I, C ) = true),T),
 	\+ holdsAt((role_of(A, acceptor, R, I, C ) = true),T-1).
+%holdsAt(obl(L, syncReq(L, A, V, R, I, C)) = true, T) :-
+%	holdsAt(per(L, syncReq(L, A, V, R, I, C)) = true, T),
+%	chosen(V, R, I, C, T-1),
+%	holdsAt((role_of(A, acceptor, R, I, C ) = true),T),
+%	\+ holdsAt((role_of(A, acceptor, R, I, C ) = true),T-1).
 	
 % the new acceptor can ack the sync with either a yes (by voting FOR the currently chosen value)
 % or by voting for anything else (eg, 'no'). This initiates a voted&reportedVote or an obligation
