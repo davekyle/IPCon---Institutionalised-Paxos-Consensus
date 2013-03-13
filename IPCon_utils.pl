@@ -1,9 +1,9 @@
 :- use_module(library(lists)).
 
 numberOfVotesForValue(Val, R, I, C, T, NumberFor, NumberAgainst) :-
-	setOfHighestVotes(I, C, T, AllVotes), %write('All:'), write(AllVotes), nl,
-	findall((Agent,(R,_),Val), member((Agent,(R,_),Val), AllVotes), VotesForVal), %write('For:'), write(VotesForVal), nl,
-	findall((Agent2,(R,_),Q), (member((Agent2,(R,_),Q), AllVotes), not(Q=Val)), VotesAgainstVal), %write('Against:'), write(VotesAgainstVal), nl,
+	setOfHighestVotes(I, C, T, AllVotes), write('All:'), write(AllVotes), nl,
+	findall((Agent,(R,_),Val), member((Agent,(R,_),Val), AllVotes), VotesForVal), write('For:'), write(VotesForVal), nl,
+	findall((Agent2,(R,_),Q), (member((Agent2,(R,_),Q), AllVotes), not(Q=Val)), VotesAgainstVal), write('Against:'), write(VotesAgainstVal), nl,
 	length(VotesForVal, NumberFor),
 	length(VotesAgainstVal, NumberAgainst).
 
@@ -45,7 +45,8 @@ setOfHighestVotes(I, C, T, AllVotes) :-
 	%% Don't care how many we get in this case.
 	%%length(ReportedAgents, NumberOfAgents), NumberOfAgents >= Size,  %write('gotNumber'), nl,
 	%write(ReportedAgents), nl,
-	clean(ReportedAgents, AllVotes1, AllVotes).
+	clean(ReportedAgents, AllVotes1, AllVotes2),
+	removeDup(AllVotes2, AllVotes).
 	
 %% unused
 %% Find highest vote per agent ONLY, at a time T

@@ -512,6 +512,10 @@ initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
 	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T),
 	holdsAt(per(L, revise( L, I, C)) = true, T),
 	holdsAt(possibleAddRevision(R, I, C) = true, T).
+%initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
+%	holdsAt(per(A, syncAck(A, 'no', R, I, C)) = true, T),
+%	holdsAt(per(L, revise( L, I, C)) = true, T),
+%	holdsAt(possibleAddRevision(R, I, C) = true, T).
 	
 	
 % there's a possibility of revision if anyone is being synched (so a val *was* chosen)
@@ -519,7 +523,7 @@ initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
 holdsAt(possibleAddRevision(R, I, C) = true, T) :-
 	holdsAt(sync(_, V, R, I, C) = true, T),
 	numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst),
-	NumberFor = NumberAgainst.
+	NumberFor = NumberAgainst, write('PAR!').
 	
 % there's a possibility of revision if a value has been chosen
 % and if the number of votes for and not-for that val are equal before the acceptor leaves
