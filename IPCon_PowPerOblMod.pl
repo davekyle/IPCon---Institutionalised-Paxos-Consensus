@@ -134,6 +134,7 @@ holdsAt((pow( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 % acceptor has permission to response1b if they're replying to the leader and they did actually vote previously
 holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 	%holdsAt((pre_vote(B,I,C) = true), T),
+	B = (BR, BB), N = (BR, NB),
 	holdsAt((pow( A, response1b(A,(A,N,V),B,I,C) ) = true), T),
 	holdsAt((voted(A,N,V,I,C ) = true), T).
 holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
@@ -148,6 +149,7 @@ holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 holdsAt((obl( A, response1b(A,(A,N,V),B,I,C) ) = true), T) :-
 	holdsAt((per( A, response1b(A,(A,N,V),B,I,C) ) = true), T),
 	holdsAt((voted(A,N,V,I,C ) = true), T),
+	not ( holdsAt(( pre_vote(B1,I,C)=true), T), B1 = (B1R, B1B), B = (BR, BB), B1B>BB, N = (NR, NB), B1R = NR ),
 	\+ holdsAt((reportedVote(A,N,V,B,I,C ) = true), T).
 
 % leader can submit2a and start the ballot if they have pwr and permission.
