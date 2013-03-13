@@ -18,7 +18,7 @@ happens( submit2a(	ag1, (0,2), a,						issue,	cluster ),	4).
 happens( vote2b( 	ag1, (0,2), a,						issue,	cluster ),	5).
 happens( addRole(	ag1, ag2, acceptor,				0,	issue,	cluster ),	6).
 happens( syncReq(	ag1, ag2, 	a, 					0,	issue,	cluster ),	7).
-happens( syncAck(	ag2,		'no',					0,	issue,	cluster ),	8).
+happens( syncAck(	ag2,		'IPCNoVote',					0,	issue,	cluster ),	8).
 happens( addRole(	ag1, ag3, acceptor,				0,	issue,	cluster ),	9).
 happens( syncReq(	ag1, ag3, 	a, 					0,	issue,	cluster ),	10).
-happens( syncAck(	ag3,		'no',					0,	issue,	cluster ),	11).
+happens( syncAck(	ag3,		'IPCNoVote',					0,	issue,	cluster ),	11).
