@@ -106,12 +106,16 @@ holdsAt((pow( L, prepare1a(L,B,I,C) ) = true),T) :-
 	holdsAt((role_of( L, leader, I, C ) = true),T).
 holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T) :-
 	holdsAt((pow( L, prepare1a(L,B,I,C) ) = true),T).
-holdsAt((obl( L, prepare1a(L,B,I,C) ) = true),T) :-
-	%holdsAt((pow( L, prepare1a(L,B,I,C) ) = true),T), %per includes pow
+holdsAt((obl( leader, R, I, C, prepare1a(L,B,I,C) ) = true),T) :-
+	B = (R, BB),
 	holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T),
 	holdsAt((proposed( V, R, I, C ) = true), T),
-	B = (R, BB),
 	\+ holdsAt((pre_vote( (R,_), I, C ) = true),T).
+%holdsAt((obl( L, prepare1a(L,B,I,C) ) = true),T) :-
+%	holdsAt((per( L, prepare1a(L,B,I,C) ) = true),T),
+%	holdsAt((proposed( V, R, I, C ) = true), T),
+%	B = (R, BB),
+%	\+ holdsAt((pre_vote( (R,_), I, C ) = true),T).
 
 
 % learners and acceptors can send response1b msgs informing on others for addition to the hnb list if they have pwr and permission
@@ -585,7 +589,12 @@ holdsAt( obl(Agent, Action) = true, T ) :-
 	holdsAt( obl( Role, R, I, C, Action ) = true, T),
 	holdsAt( role_of( Agent, Role, R, I, C ) = true, T).
 	
-% youre the leader in all issues if youre the leader in any
+% need an extra one due to leadership...
+holdsAt( obl(Agent, Action) = true, T ) :-
+	holdsAt( obl( leader, R, I, C, Action ) = true, T),
+	holdsAt( role_of( Agent, leader, I, C ) = true, T).
+	
+% youre the leader in all issues if youre the leader in any revision
 holdsAt((role_of(Agent, leader, Issue, Cluster)=true),T) :-
 	holdsAt((role_of(Agent, leader, _, Issue, Cluster)=true),T).
 	
