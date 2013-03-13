@@ -322,18 +322,19 @@ terminates(leaveCluster( A, C ), (reportedVote( A, _, _, _, _, C ) = true), T) :
 	% holdsAt((reportedVote( A, _, _, _, _, C ) = true), T).
 	
 % note, can't do multiple leaveCluster in one timestamp if this is to work.
-initiates(leaveCluster( A, C ), obl(L, revise(L, I, C)) = true , T) :-
+initiates(leaveCluster( A, C ), obl(leader, R, I, C, revise(L, I, C)) = true , T) :-
+	B = (R, BB),
 	holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %write('Removed an acc'), nl,
-	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+	%holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
 	% FIXME TODO these B's might be wrong... agent needs to have voted for the value but might not have reported at time of voting
 	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
 	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
-% initiates(leaveCluster( List, C ), obl(L, revise(L, I, C)) = true , T) :-
-	% member(A, List),
-	% holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %write('Removed an acc'), nl,
-	% holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
-	% holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
-	% holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
+%initiates(leaveCluster( A, C ), obl(L, revise(L, I, C)) = true , T) :-
+%	holdsAt((role_of(A, acceptor, R, I, C ) = true),T), %write('Removed an acc'), nl,
+%	holdsAt(per(L, revise( L, I, C)) = true, T),%write('Permission to revise'), nl,
+%	% FIXME TODO these B's might be wrong... agent needs to have voted for the value but might not have reported at time of voting
+%	holdsAt((reportedVote( A, B, V, B, I, C ) = true), T),
+%	holdsAt(possibleRemRevision(V, R, I, C) = true, T). %, write('REVISE NOW'), nl.
 
 % leader can add anyone to any role whenever they want, unless that person already has the role.
 initiates(addRole( L, A, Role, R, I, C ), (role_of( A, Role, R, I, C ) = true), T) :-
