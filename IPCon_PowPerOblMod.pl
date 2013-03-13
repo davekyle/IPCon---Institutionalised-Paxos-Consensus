@@ -498,7 +498,7 @@ initiates(syncAck(A, 'no', R, I, C), obl(L, revise(L, I, C)) = true , T) :-
 % there's a possibility of revision if anyone is being synched (so a val *was* chosen)
 % and if the number of votes for and not-for that val are equal before the syncAck
 holdsAt(possibleAddRevision(R, I, C) = true, T) :-
-	holdsAt(sync(_, Val, R, I, C) = true, T),
+	holdsAt(sync(_, V, R, I, C) = true, T),
 	numberOfVotesForValue(V, R, I, C, T, NumberFor, NumberAgainst),
 	NumberFor = NumberAgainst.
 	
@@ -580,7 +580,7 @@ holdsAt( per(Agent, Action) = false, T ) :-
 	
 %% obligation stuff
 holdsAt( obl(Agent, Action) = true, T ) :-
-	holdsAt( oblig( Role, R, I, C, Action ) = true, T),
+	holdsAt( obl( Role, R, I, C, Action ) = true, T),
 	holdsAt( role_of( Agent, Role, R, I, C ) = true, T).
 	
 % youre the leader in all issues if youre the leader in any
